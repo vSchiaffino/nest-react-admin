@@ -66,7 +66,17 @@ export default function ContentsTable({
   return (
     <>
       <div className="table-container">
-        <Table columns={['Name', 'Description', 'Created']}>
+        <Table
+          columns={['Name', 'Description', 'Created']}
+          onChangePagination={() => {}}
+          total={10}
+          pagination={{
+            page: 1,
+            perPage: 3,
+            orderBy: 'id',
+            orderDirection: 'ASC',
+          }}
+        >
           {isLoading
             ? null
             : data.map(({ id, name, description, dateCreated }) => (

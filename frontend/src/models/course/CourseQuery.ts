@@ -1,4 +1,8 @@
 export default interface CourseQuery {
   name?: string;
   description?: string;
+  page?: number;
+  perPage?: number;
+  orderBy: string;
+  orderDirection: 'ASC' | 'DESC';
 }

@@ -10,16 +10,27 @@ import useAuth from '../hooks/useAuth';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import courseService from '../services/CourseService';
 import useCourses from '../hooks/useCourses';
+import Pagination from '../models/shared/pagination';
+import Course from '../models/course/Course';
 
 export default function Courses() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    perPage: 10,
+    orderBy: 'name',
+    orderDirection: 'ASC',
+  });
   const [addCourseShow, setAddCourseShow] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
   const { authenticatedUser } = useAuth();
-  const { courses, isLoading, refetch } = useCourses(name, description);
+  const { courses, total, isLoading, refetch } = useCourses(
+    name,
+    description,
+    pagination,
+  );
 
   const {
     register,
@@ -77,6 +88,9 @@ export default function Courses() {
       </div>
 
       <CoursesTable
+        pagination={pagination}
+        onChangePagination={setPagination}
+        total={total}
         data={courses}
         isLoading={isLoading}
         refetch={() => refetch()}

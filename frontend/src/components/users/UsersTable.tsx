@@ -55,7 +55,17 @@ export default function UsersTable({ data, isLoading }: UsersTableProps) {
   return (
     <>
       <div className="table-container">
-        <Table columns={['Name', 'Username', 'Status', 'Role', 'Created']}>
+        <Table
+          onChangePagination={() => {}}
+          total={10}
+          columns={['Name', 'Username', 'Status', 'Role', 'Created']}
+          pagination={{
+            page: 1,
+            perPage: 3,
+            orderBy: 'id',
+            orderDirection: 'ASC',
+          }}
+        >
           {isLoading
             ? null
             : data.map(

@@ -19,7 +19,11 @@ import { ContentQuery } from '../content/content.query';
 import { ContentService } from '../content/content.service';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
-import { CreateCourseDto, UpdateCourseDto } from './course.dto';
+import {
+  CreateCourseDto,
+  GetCoursesResultDto,
+  UpdateCourseDto,
+} from './course.dto';
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
 import { CourseService } from './course.service';
@@ -41,8 +45,12 @@ export class CourseController {
   }
 
   @Get()
-  async findAll(@Query() courseQuery: CourseQuery): Promise<Course[]> {
-    return await this.courseService.findAll(courseQuery);
+  async findAll(
+    @Query() courseQuery: CourseQuery,
+  ): Promise<GetCoursesResultDto> {
+    const courses = await this.courseService.findAll(courseQuery);
+    const total = await this.courseService.count(courseQuery);
+    return { courses, total };
   }
 
   @Get('/:id')

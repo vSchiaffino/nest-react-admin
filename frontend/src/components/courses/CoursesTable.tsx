@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { AlertTriangle, Loader, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -10,8 +10,12 @@ import courseService from '../../services/CourseService';
 import Modal from '../shared/Modal';
 import Table from '../shared/Table';
 import TableItem from '../shared/TableItem';
+import Pagination from '../../models/shared/pagination';
 
 interface UsersTableProps {
+  total: number;
+  pagination: Pagination;
+  onChangePagination: Dispatch<SetStateAction<Pagination>>;
   data: Course[];
   isLoading: boolean;
   refetch: () => void;
@@ -21,6 +25,9 @@ export default function CoursesTable({
   data,
   isLoading,
   refetch,
+  pagination,
+  total,
+  onChangePagination,
 }: UsersTableProps) {
   const { authenticatedUser } = useAuth();
   const [deleteShow, setDeleteShow] = useState<boolean>(false);
@@ -65,7 +72,12 @@ export default function CoursesTable({
   return (
     <>
       <div className="table-container">
-        <Table columns={['Name', 'Description', 'Created']}>
+        <Table
+          total={total}
+          columns={['name', 'description', 'dateCreated']}
+          pagination={pagination}
+          onChangePagination={onChangePagination}
+        >
           {isLoading
             ? null
             : data.map(({ id, name, description, dateCreated }) => (

@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Course } from './course.entity';
 
 export class CreateCourseDto {
   @IsNotEmpty()
@@ -20,4 +21,9 @@ export class UpdateCourseDto {
   @IsNotEmpty()
   @IsString()
   description?: string;
+}
+
+export class GetCoursesResultDto {
+  courses: Course[];
+  total: number;
 }

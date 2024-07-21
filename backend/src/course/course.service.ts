@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ILike } from 'typeorm';
+import { FindConditions, ILike } from 'typeorm';
 
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
@@ -7,6 +7,13 @@ import { CourseQuery } from './course.query';
 
 @Injectable()
 export class CourseService {
+  private processFilter(filter: { name?: string; description?: string }) {
+    Object.keys(filter).forEach((key) => {
+      filter[key] = ILike(`%${filter[key]}%`);
+    });
+    return filter;
+  }
+
   async save(createCourseDto: CreateCourseDto): Promise<Course> {
     return await Course.create({
       ...createCourseDto,
@@ -15,14 +22,16 @@ export class CourseService {
   }
 
   async findAll(courseQuery: CourseQuery): Promise<Course[]> {
-    Object.keys(courseQuery).forEach((key) => {
-      courseQuery[key] = ILike(`%${courseQuery[key]}%`);
-    });
+    const { page, perPage, orderBy, orderDirection, ...filter } = courseQuery;
+    const where = this.processFilter(filter);
+    const take = perPage || 10;
+    const skip = ((page || 1) - 1) * take;
     return await Course.find({
-      where: courseQuery,
+      where,
+      take,
+      skip,
       order: {
-        name: 'ASC',
-        description: 'ASC',
+        [orderBy || 'name']: orderDirection || 'ASC',
       },
     });
   }
@@ -49,7 +58,11 @@ export class CourseService {
     return id;
   }
 
-  async count(): Promise<number> {
-    return await Course.count();
+  async count(courseQuery: CourseQuery = {}): Promise<number> {
+    const { page, perPage, orderBy, orderDirection, ...filter } = courseQuery;
+    const where = this.processFilter(filter);
+    return await Course.count({
+      where,
+    });
   }
 }
