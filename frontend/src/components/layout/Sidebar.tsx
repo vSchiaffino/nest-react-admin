@@ -1,4 +1,4 @@
-import { BookOpen, Home, LogOut, Users } from 'react-feather';
+import { BookOpen, Home, LogOut, User, Users } from 'react-feather';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import UrbanaLogoWhite from '../../assets/urbano-logo-white.png';
@@ -23,7 +23,7 @@ export default function Sidebar({ className }: SidebarProps) {
   };
 
   return (
-    <div className={'sidebar bg-cover' + className}>
+    <div className={' sidebar bg-cover ' + className}>
       <Link to="/" className="no-underline mb-20">
         <img src={UrbanaLogoWhite} className="w-full" />
       </Link>
@@ -39,6 +39,9 @@ export default function Sidebar({ className }: SidebarProps) {
             <Users size={30} strokeWidth={1} /> Users
           </SidebarItem>
         ) : null}
+        <SidebarItem to="/profile">
+          <User size={30} strokeWidth={1} /> My profile
+        </SidebarItem>
       </nav>
       <button
         className="text-primary-red border-primary-red border rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none text-lg"
