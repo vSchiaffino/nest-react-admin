@@ -6,6 +6,8 @@ services:
       POSTGRES_DB: carna-database
       POSTGRES_USER: carna
       POSTGRES_PASSWORD: IjSJmKN1fc#DZBL*NHbVoxIh65JvsFFDO@so
+    ports:
+      - '5432:5432'
 
   backend:
     container_name: backend
@@ -19,7 +21,7 @@ services:
       DATABASE_PORT: 5432
       DATABASE_USERNAME: carna
       DATABASE_PASSWORD: IjSJmKN1fc#DZBL*NHbVoxIh65JvsFFDO@so
-      DATABASE_NAME: "carna-database"
+      DATABASE_NAME: 'carna-database'
       JWT_SECRET: 4125442A472D4B6150645367556B58703273357638792F423F4528482B4D6251
       JWT_REFRESH_SECRET: 576E5A7134743777217A25432A462D4A614E645267556B58703273357538782F
 
@@ -29,6 +31,6 @@ services:
       context: frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - '80:80'
     depends_on:
       - backend
