@@ -24,8 +24,8 @@
 
 @layer components {
   .btn {
-    @apply p-3 bg-blue-500 rounded-md focus:outline-none text-white;
-    @apply hover:bg-blue-700 transition-all;
+    @apply p-3 bg-primary-red rounded-md focus:outline-none text-white;
+    @apply hover:bg-red-hover hover:text-white-hover transition-all;
     @apply focus:ring disabled:opacity-50;
   }
   .btn.danger {
@@ -45,8 +45,15 @@
   }
   .sidebar {
     @apply fixed h-full w-72 p-5 shadow flex flex-col transform -translate-x-72 bg-white lg:translate-x-0 transition-transform;
+
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('../../public/sidemenu-bg.jpg');
   }
   .sidebar.show {
     @apply translate-x-0 !important;
   }
+}
+
+body {
+  font-family: Roboto, Helvetica, Helvetica Neue, Nunito Sans !important;
 }

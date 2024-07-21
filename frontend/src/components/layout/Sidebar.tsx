@@ -1,6 +1,7 @@
 import { BookOpen, Home, LogOut, Users } from 'react-feather';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
+import UrbanaLogoWhite from '../../assets/urbano-logo-white.png';
 
 import useAuth from '../../hooks/useAuth';
 import authService from '../../services/AuthService';
@@ -22,25 +23,25 @@ export default function Sidebar({ className }: SidebarProps) {
   };
 
   return (
-    <div className={'sidebar ' + className}>
-      <Link to="/" className="no-underline text-black">
-        <h1 className="font-semibold text-center">Admin urbano</h1>
+    <div className={'sidebar bg-cover' + className}>
+      <Link to="/" className="no-underline mb-20">
+        <img src={UrbanaLogoWhite} className="w-full" />
       </Link>
-      <nav className="mt-5 flex flex-col gap-3 flex-grow">
+      <nav className="mt-5 flex flex-col gap-8 flex-grow">
         <SidebarItem to="/">
-          <Home /> Dashboard
+          <Home size={30} strokeWidth={1} /> Dashboard
         </SidebarItem>
         <SidebarItem to="/courses">
-          <BookOpen /> Courses
+          <BookOpen size={30} strokeWidth={1} /> Courses
         </SidebarItem>
         {authenticatedUser.role === 'admin' ? (
           <SidebarItem to="/users">
-            <Users /> Users
+            <Users size={30} strokeWidth={1} /> Users
           </SidebarItem>
         ) : null}
       </nav>
       <button
-        className="text-red-500 rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none"
+        className="text-primary-red border-primary-red border rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none text-lg"
         onClick={handleLogout}
       >
         <LogOut /> Logout

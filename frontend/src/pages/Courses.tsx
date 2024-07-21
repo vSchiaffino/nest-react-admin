@@ -49,9 +49,7 @@ export default function Courses() {
   };
 
   return (
-    <Layout>
-      <h1 className="font-semibold text-3xl mb-5">Manage Courses</h1>
-      <hr />
+    <Layout title={'Manage courses'}>
       {authenticatedUser.role !== 'user' ? (
         <button
           className="btn my-5 flex gap-2 w-full sm:w-auto justify-center"

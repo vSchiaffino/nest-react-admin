@@ -54,11 +54,9 @@ export default function Course() {
   };
 
   return (
-    <Layout>
-      <h1 className="font-semibold text-3xl mb-5">
-        {!userQuery.isLoading ? `${userQuery.data.name} Contents` : ''}
-      </h1>
-      <hr />
+    <Layout
+      title={!userQuery.isLoading ? `${userQuery.data.name} Contents` : ''}
+    >
       {authenticatedUser.role !== 'user' ? (
         <button
           className="btn my-5 flex gap-2 w-full sm:w-auto justify-center"
