@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Plus, RefreshCcw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
@@ -9,6 +9,7 @@ import Modal from '../components/shared/Modal';
 import useAuth from '../hooks/useAuth';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import courseService from '../services/CourseService';
+import useCourses from '../hooks/useCourses';
 
 export default function Courses() {
   const [name, setName] = useState('');
@@ -18,17 +19,7 @@ export default function Courses() {
   const [error, setError] = useState<string>();
 
   const { authenticatedUser } = useAuth();
-  const { data, isLoading } = useQuery(
-    ['courses', name, description],
-    () =>
-      courseService.findAll({
-        name: name || undefined,
-        description: description || undefined,
-      }),
-    {
-      refetchInterval: 1000,
-    },
-  );
+  const { courses, isLoading, refetch } = useCourses(name, description);
 
   const {
     register,
@@ -75,10 +66,16 @@ export default function Courses() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          <button
+            className="btn bg-blue-500 hover:bg-blue-600 flex gap-2"
+            onClick={() => refetch()}
+          >
+            <RefreshCcw size={20} /> Refresh
+          </button>
         </div>
       </div>
 
-      <CoursesTable data={data} isLoading={isLoading} />
+      <CoursesTable data={courses} isLoading={isLoading} />
 
       {/* Add User Modal */}
       <Modal show={addCourseShow}>
