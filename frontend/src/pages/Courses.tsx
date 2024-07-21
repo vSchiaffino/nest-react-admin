@@ -34,6 +34,7 @@ export default function Courses() {
       setAddCourseShow(false);
       reset();
       setError(null);
+      refetch();
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -75,7 +76,11 @@ export default function Courses() {
         </div>
       </div>
 
-      <CoursesTable data={courses} isLoading={isLoading} />
+      <CoursesTable
+        data={courses}
+        isLoading={isLoading}
+        refetch={() => refetch()}
+      />
 
       {/* Add User Modal */}
       <Modal show={addCourseShow}>
@@ -85,6 +90,7 @@ export default function Courses() {
             className="ml-auto focus:outline-none"
             onClick={() => {
               reset();
+              refetch();
               setAddCourseShow(false);
             }}
           >
