@@ -2,6 +2,7 @@ import Course from '../models/course/Course';
 import CourseQuery from '../models/course/CourseQuery';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import GetCoursesResponse from '../models/course/GetCoursesResponse';
+import { SendContactRequest } from '../models/course/SendContactRequest';
 import UpdateCourseRequest from '../models/course/UpdateCourseRequest';
 import apiService from './ApiService';
 
@@ -31,6 +32,13 @@ class UserService {
 
   async delete(id: string): Promise<void> {
     await apiService.delete(`/api/courses/${id}`);
+  }
+
+  async contact(courseId: string, sendContactRequest: SendContactRequest) {
+    await apiService.post(
+      `/api/courses/${courseId}/contact`,
+      sendContactRequest,
+    );
   }
 }
 

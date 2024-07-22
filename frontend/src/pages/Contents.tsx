@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Mail, Plus, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router';
@@ -11,6 +11,7 @@ import useAuth from '../hooks/useAuth';
 import CreateContentRequest from '../models/content/CreateContentRequest';
 import contentService from '../services/ContentService';
 import courseService from '../services/CourseService';
+import { ContactModal } from '../components/content/ContactModal';
 
 export default function Course() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ export default function Course() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [addContentShow, setAddContentShow] = useState<boolean>(false);
+  const [showContactForm, setShowContactForm] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
   const userQuery = useQuery('user', async () => courseService.findOne(id));
@@ -66,8 +68,18 @@ export default function Course() {
         </button>
       ) : null}
 
-      <div className="table-filter">
-        <div className="flex flex-row gap-5">
+      <div className="table-filter flex-col">
+        <div className="flex flex-row">
+          <button
+            className="btn text-lg font-light mt-4 flex gap-5"
+            onClick={() => setShowContactForm(true)}
+          >
+            <Mail />
+            Contact to email
+          </button>
+        </div>
+        <h2 className="flex flex-row font-medium text-xl">Filter contents</h2>
+        <div className="flex flex-row gap-5 w-1/2">
           <input
             type="text"
             className="input w-1/2"
@@ -137,6 +149,12 @@ export default function Course() {
           ) : null}
         </form>
       </Modal>
+
+      <ContactModal
+        courseId={id}
+        show={showContactForm}
+        setShow={setShowContactForm}
+      />
     </Layout>
   );
 }
