@@ -6,6 +6,39 @@ import statsService from '../services/StatsService';
 import useAuth from '../hooks/useAuth';
 import useCourses from '../hooks/useCourses';
 import { Link } from 'react-router-dom';
+import Course from '../models/course/Course';
+import useFavoriteCourses from '../hooks/useFavoriteCourses';
+
+function FeaturedCourses({
+  title,
+  courses,
+}: {
+  title: string;
+  courses: Course[];
+}) {
+  return (
+    <div className="card shadow mt-8 p-12">
+      <h2 className="font-semibold text-4xl mb-10">{title}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {courses.map((course) => (
+          <Link
+            key={course.id}
+            className="card shadow p-4 no-underline text-black"
+            to={`/courses/${course.id}`}
+          >
+            <img
+              src={course.imageUrl}
+              alt={`Course ${course.name}`}
+              className="w-full h-32 object-cover mb-4"
+            />
+            <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
+            <p className="text-gray-600">{course.description}</p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { authenticatedUser } = useAuth();
@@ -19,6 +52,8 @@ export default function Dashboard() {
     'stats',
     statsService.getStats,
   );
+  const { favoriteCourses, isLoading: isLoadingFavoriteCourses } =
+    useFavoriteCourses();
 
   return (
     <Layout title={'Dashboard'}>
@@ -50,28 +85,16 @@ export default function Dashboard() {
         ) : null}
       </div>
       {!isLoadingCourses && (
-        <div className="card shadow mt-8 p-12">
-          <h2 className="font-semibold text-4xl mb-10">
-            Check Out Our Latest Courses!
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {courses.map((course) => (
-              <Link
-                key={course.id}
-                className="card shadow p-4 no-underline text-black"
-                to={`/courses/${course.id}`}
-              >
-                <img
-                  src={course.imageUrl}
-                  alt={`Course ${course.name}`}
-                  className="w-full h-32 object-cover mb-4"
-                />
-                <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
-                <p className="text-gray-600">{course.description}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <FeaturedCourses
+          courses={courses}
+          title="Check Out Our Latest Courses!"
+        />
+      )}
+      {!isLoadingFavoriteCourses && (
+        <FeaturedCourses
+          courses={favoriteCourses}
+          title="Your favorite courses:"
+        />
       )}
     </Layout>
   );
