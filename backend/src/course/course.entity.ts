@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   OneToMany,
+  JoinTable,
 } from 'typeorm';
 
 import { Content } from '../content/content.entity';
@@ -35,4 +36,8 @@ export class Course extends BaseEntity {
 
   @ManyToMany(() => User, (user) => user.favoriteCourses)
   favoritedBy: User[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  students: User[];
 }

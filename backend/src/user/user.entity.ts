@@ -42,4 +42,7 @@ export class User extends BaseEntity {
   @ManyToMany(() => Course, { eager: true })
   @JoinTable()
   favoriteCourses: Course[];
+
+  @ManyToMany(() => Course, (course) => course.students)
+  enrolledCourses: Course[];
 }

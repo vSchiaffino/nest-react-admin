@@ -28,10 +28,11 @@ import {
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
 import { CourseService } from './course.service';
-import { UserGuard } from 'src/auth/guards/user.guard';
 import { MailerService } from 'src/mailer/mailer.service';
 import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
 import { User } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
+import { QueryBuilder } from 'typeorm';
 
 @Controller('courses')
 @ApiBearerAuth()
@@ -40,6 +41,7 @@ import { User } from 'src/user/user.entity';
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
+    private readonly userService: UserService,
     private readonly contentService: ContentService,
     private readonly mailerService: MailerService,
   ) {}
@@ -93,6 +95,23 @@ export class CourseController {
       title,
       beforeMessage + message,
     );
+  }
+
+  @Post('/:id/enroll')
+  async changeEnroll(
+    @Param('id') courseId: string,
+    @AuthorizedUser() authorizedUser: User,
+  ): Promise<void> {
+    const user = await this.userService.findById(authorizedUser.id);
+    const course = await this.courseService.findById(courseId);
+    const isAlreadyEnrolled = course.students.find(
+      (student) => student.id == user.id,
+    );
+    if (isAlreadyEnrolled) {
+      this.courseService.unenroll(user, course);
+    } else {
+      this.courseService.enroll(user, course);
+    }
   }
 
   @Post('/:id/contents')

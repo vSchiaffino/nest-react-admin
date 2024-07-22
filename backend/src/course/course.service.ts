@@ -4,6 +4,7 @@ import { FindConditions, ILike } from 'typeorm';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class CourseService {
@@ -12,6 +13,19 @@ export class CourseService {
       filter[key] = ILike(`%${filter[key]}%`);
     });
     return filter;
+  }
+
+  async enroll(user: User, course: Course) {
+    course.students.push(user);
+    await course.save();
+  }
+
+  async unenroll(user: User, course: Course) {
+    course.students = course.students.filter(
+      (eachUser) => eachUser.id !== user.id,
+    );
+
+    await course.save();
   }
 
   async save(createCourseDto: CreateCourseDto): Promise<Course> {
@@ -37,7 +51,11 @@ export class CourseService {
   }
 
   async findById(id: string): Promise<Course> {
-    const course = await Course.findOne(id);
+    const course = await Course.createQueryBuilder('course')
+      .leftJoinAndSelect('course.students', 'students')
+      .where('course.id = :id', { id })
+      .getOne();
+      
     if (!course) {
       throw new HttpException(
         `Could not find course with matching id ${id}`,
