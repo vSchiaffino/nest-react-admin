@@ -80,7 +80,7 @@ export default function CoursesTable({
         >
           {isLoading
             ? null
-            : data.map(({ id, name, description, dateCreated }) => (
+            : data.map(({ id, name, description, dateCreated, imageUrl }) => (
                 <tr key={id}>
                   <TableItem>
                     <Link to={`/courses/${id}`}>{name}</Link>
@@ -98,6 +98,7 @@ export default function CoursesTable({
 
                           setValue('name', name);
                           setValue('description', description);
+                          setValue('imageUrl', imageUrl);
 
                           setUpdateShow(true);
                         }}
@@ -203,6 +204,14 @@ export default function CoursesTable({
             required
             disabled={isSubmitting}
             {...register('description')}
+          />
+          <input
+            type="text"
+            className="input"
+            placeholder="Image URL"
+            required
+            disabled={isSubmitting}
+            {...register('imageUrl')}
           />
           <button className="btn" disabled={isSubmitting}>
             {isSubmitting ? (

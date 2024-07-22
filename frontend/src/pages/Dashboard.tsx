@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import UpdateProfile from '../components/dashboard/UpdateProfile';
+import UpdateProfile from '../components/profile/UpdateProfile';
 import Layout from '../components/layout';
 import statsService from '../services/StatsService';
 import useAuth from '../hooks/useAuth';
@@ -9,18 +9,21 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const { authenticatedUser } = useAuth();
-  const { courses } = useCourses('', '', {
+  const { courses, isLoading: isLoadingCourses } = useCourses('', '', {
     page: 1,
     perPage: 3,
     orderBy: 'dateCreated',
     orderDirection: 'DESC',
   });
-  const { data, isLoading } = useQuery('stats', statsService.getStats);
+  const { data, isLoading: isLoadingStats } = useQuery(
+    'stats',
+    statsService.getStats,
+  );
 
   return (
     <Layout title={'Dashboard'}>
       <div className="mt-5 flex flex-col gap-5">
-        {!isLoading ? (
+        {!isLoadingStats ? (
           <div className="flex flex-col sm:flex-row gap-5">
             {authenticatedUser.role === 'admin' && (
               <div className="card shadow text-white bg-[#0074d9] flex-1">
@@ -46,29 +49,30 @@ export default function Dashboard() {
           </div>
         ) : null}
       </div>
-      <div className="card shadow mt-8 p-12">
-        <h2 className="font-semibold text-4xl mb-10">
-          Check Out Our Latest Courses!
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {courses.map((course) => (
-            <Link
-              key={course.id}
-              className="card shadow p-4 no-underline text-black"
-              to={`/courses/${course.id}`}
-            >
-              {/* TODO: image config */}
-              <img
-                src="https://via.placeholder.com/150"
-                alt={`Course ${course.name}`}
-                className="w-full h-32 object-cover mb-4"
-              />
-              <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
-              <p className="text-gray-600">{course.description}</p>
-            </Link>
-          ))}
+      {!isLoadingCourses && (
+        <div className="card shadow mt-8 p-12">
+          <h2 className="font-semibold text-4xl mb-10">
+            Check Out Our Latest Courses!
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {courses.map((course) => (
+              <Link
+                key={course.id}
+                className="card shadow p-4 no-underline text-black"
+                to={`/courses/${course.id}`}
+              >
+                <img
+                  src={course.imageUrl}
+                  alt={`Course ${course.name}`}
+                  className="w-full h-32 object-cover mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
+                <p className="text-gray-600">{course.description}</p>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </Layout>
   );
 }

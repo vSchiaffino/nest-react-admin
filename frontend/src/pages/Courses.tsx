@@ -133,6 +133,14 @@ export default function Courses() {
             required
             {...register('description')}
           />
+          <input
+            type="text"
+            className="input"
+            placeholder="Image URL"
+            disabled={isSubmitting}
+            required
+            {...register('imageUrl')}
+          />
           <button className="btn" disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
