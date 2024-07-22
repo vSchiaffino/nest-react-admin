@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Course } from './course.entity';
 
 export class CreateCourseDto {
@@ -13,6 +13,11 @@ export class CreateCourseDto {
   @IsNotEmpty()
   @IsString()
   imageUrl: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  contactEmail: string;
 }
 
 export class UpdateCourseDto {
@@ -30,6 +35,11 @@ export class UpdateCourseDto {
   @IsNotEmpty()
   @IsString()
   imageUrl?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  contactEmail?: string;
 }
 
 export class GetCoursesResultDto {

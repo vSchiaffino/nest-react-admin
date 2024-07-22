@@ -84,64 +84,74 @@ export default function CoursesTable({
         >
           {isLoading
             ? null
-            : data.map(({ id, name, description, dateCreated, imageUrl }) => (
-                <tr key={id}>
-                  <TableItem>
-                    <Link to={`/courses/${id}`}>{name}</Link>
-                  </TableItem>
-                  <TableItem>{description}</TableItem>
-                  <TableItem>
-                    {new Date(dateCreated).toLocaleDateString()}
-                  </TableItem>
-                  <TableItem>
-                    {!isFavCoursesLoading && (
-                      <Heart
-                        className="cursor-pointer"
-                        onClick={() => changeFavoriteCourse(id)}
-                        fill={
-                          favoriteCourses.find((course) => course.id === id)
-                            ? 'red'
-                            : 'none'
-                        }
-                        stroke={
-                          favoriteCourses.find((course) => course.id === id)
-                            ? 'red'
-                            : 'black'
-                        }
-                      />
-                    )}
-                  </TableItem>
-                  <TableItem className="text-right">
-                    {['admin', 'editor'].includes(authenticatedUser.role) ? (
-                      <button
-                        className="text-indigo-600 hover:text-indigo-900 focus:outline-none"
-                        onClick={() => {
-                          setSelectedCourseId(id);
+            : data.map(
+                ({
+                  id,
+                  name,
+                  description,
+                  dateCreated,
+                  imageUrl,
+                  contactEmail,
+                }) => (
+                  <tr key={id}>
+                    <TableItem>
+                      <Link to={`/courses/${id}`}>{name}</Link>
+                    </TableItem>
+                    <TableItem>{description}</TableItem>
+                    <TableItem>
+                      {new Date(dateCreated).toLocaleDateString()}
+                    </TableItem>
+                    <TableItem>
+                      {!isFavCoursesLoading && (
+                        <Heart
+                          className="cursor-pointer"
+                          onClick={() => changeFavoriteCourse(id)}
+                          fill={
+                            favoriteCourses.find((course) => course.id === id)
+                              ? 'red'
+                              : 'none'
+                          }
+                          stroke={
+                            favoriteCourses.find((course) => course.id === id)
+                              ? 'red'
+                              : 'black'
+                          }
+                        />
+                      )}
+                    </TableItem>
+                    <TableItem className="text-right">
+                      {['admin', 'editor'].includes(authenticatedUser.role) ? (
+                        <button
+                          className="text-indigo-600 hover:text-indigo-900 focus:outline-none"
+                          onClick={() => {
+                            setSelectedCourseId(id);
 
-                          setValue('name', name);
-                          setValue('description', description);
-                          setValue('imageUrl', imageUrl);
+                            setValue('name', name);
+                            setValue('description', description);
+                            setValue('imageUrl', imageUrl);
+                            setValue('contactEmail', contactEmail);
 
-                          setUpdateShow(true);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    ) : null}
-                    {authenticatedUser.role === 'admin' ? (
-                      <button
-                        className="text-red-600 hover:text-red-900 ml-3 focus:outline-none"
-                        onClick={() => {
-                          setSelectedCourseId(id);
-                          setDeleteShow(true);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    ) : null}
-                  </TableItem>
-                </tr>
-              ))}
+                            setUpdateShow(true);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      ) : null}
+                      {authenticatedUser.role === 'admin' ? (
+                        <button
+                          className="text-red-600 hover:text-red-900 ml-3 focus:outline-none"
+                          onClick={() => {
+                            setSelectedCourseId(id);
+                            setDeleteShow(true);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      ) : null}
+                    </TableItem>
+                  </tr>
+                ),
+              )}
         </Table>
         {!isLoading && data.length < 1 ? (
           <div className="text-center my-5 text-gray-500">
@@ -226,6 +236,14 @@ export default function CoursesTable({
             required
             disabled={isSubmitting}
             {...register('description')}
+          />
+          <input
+            type="text"
+            className="input"
+            placeholder="Contact email"
+            required
+            disabled={isSubmitting}
+            {...register('contactEmail')}
           />
           <input
             type="text"

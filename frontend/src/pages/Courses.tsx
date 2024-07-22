@@ -11,7 +11,6 @@ import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import courseService from '../services/CourseService';
 import useCourses from '../hooks/useCourses';
 import Pagination from '../models/shared/pagination';
-import Course from '../models/course/Course';
 
 export default function Courses() {
   const [name, setName] = useState('');
@@ -136,11 +135,20 @@ export default function Courses() {
           <input
             type="text"
             className="input"
+            placeholder="Contact email"
+            disabled={isSubmitting}
+            required
+            {...register('contactEmail')}
+          />
+          <input
+            type="text"
+            className="input"
             placeholder="Image URL"
             disabled={isSubmitting}
             required
             {...register('imageUrl')}
           />
+
           <button className="btn" disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />

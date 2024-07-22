@@ -22,6 +22,9 @@ export class Course extends BaseEntity {
   description: string;
 
   @Column()
+  contactEmail: string;
+
+  @Column()
   dateCreated: Date;
 
   @Column()
