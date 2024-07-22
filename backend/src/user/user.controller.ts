@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,6 +25,7 @@ import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserQuery } from './user.query';
 import { UserService } from './user.service';
+import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
 
 @Controller('users')
 @ApiTags('Users')
@@ -32,6 +34,13 @@ import { UserService } from './user.service';
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('/favorite')
+  @UseGuards(UserGuard)
+  async getFavoritedCourses(@AuthorizedUser() jwtUser: User) {
+    const user = await this.userService.findById(jwtUser.id, true);
+    return user.favoriteCourses;
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -65,5 +74,17 @@ export class UserController {
   @Roles(Role.Admin)
   async delete(@Param('id') id: string): Promise<string> {
     return await this.userService.delete(id);
+  }
+
+  @Post('/favorite/:courseId')
+  @UseGuards(UserGuard)
+  async favoriteCourse(
+    @Param('courseId') courseId: string,
+    @AuthorizedUser() jwtUser: User,
+  ) {
+    const user = await this.userService.findById(jwtUser.id, true);
+    if (user.favoriteCourses.find((course) => course.id === courseId))
+      this.userService.removeFavoriteCourse(user, courseId);
+    else this.userService.addFavoriteCourse(user, courseId);
   }
 }

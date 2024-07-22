@@ -2,11 +2,13 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
+  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 
 import { Content } from '../content/content.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Course extends BaseEntity {
@@ -27,4 +29,7 @@ export class Course extends BaseEntity {
 
   @OneToMany(() => Content, (content) => content.course)
   contents: Content[];
+
+  @ManyToMany(() => User, (user) => user.favoriteCourses)
+  favoritedBy: User[];
 }

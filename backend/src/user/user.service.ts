@@ -5,6 +5,7 @@ import { ILike } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserQuery } from './user.query';
+import { Course } from 'src/course/course.entity';
 
 @Injectable()
 export class UserService {
@@ -39,8 +40,11 @@ export class UserService {
     });
   }
 
-  async findById(id: string): Promise<User> {
-    const user = await User.findOne(id);
+  async findById(
+    id: string,
+    loadEagerRelations: boolean = false,
+  ): Promise<User> {
+    const user = await User.findOne(id, { loadEagerRelations });
 
     if (!user) {
       throw new HttpException(
@@ -53,7 +57,7 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    return User.findOne({ where: { username } });
+    return User.findOne({ where: { username }, loadRelationIds: true });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -95,5 +99,18 @@ export class UserService {
     await User.update(user, {
       refreshToken: refreshToken ? await bcrypt.hash(refreshToken, 10) : null,
     });
+  }
+
+  async addFavoriteCourse(user: User, courseId: string) {
+    const course = await Course.findOne(courseId);
+    user.favoriteCourses.push(course);
+    await user.save();
+  }
+
+  async removeFavoriteCourse(user: User, courseId: string) {
+    user.favoriteCourses = user.favoriteCourses.filter(
+      (user) => user.id !== courseId,
+    );
+    await user.save();
   }
 }

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { AlertTriangle, Loader, X } from 'react-feather';
+import { AlertTriangle, Heart, Loader, Star, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import Modal from '../shared/Modal';
 import Table from '../shared/Table';
 import TableItem from '../shared/TableItem';
 import Pagination from '../../models/shared/pagination';
+import useFavoriteCourses from '../../hooks/useFavoriteCourses';
 
 interface UsersTableProps {
   total: number;
@@ -35,7 +36,6 @@ export default function CoursesTable({
   const [selectedCourseId, setSelectedCourseId] = useState<string>();
   const [error, setError] = useState<string>();
   const [updateShow, setUpdateShow] = useState<boolean>(false);
-
   const {
     register,
     handleSubmit,
@@ -68,7 +68,11 @@ export default function CoursesTable({
       setError(error.response.data.message);
     }
   };
-
+  const {
+    favoriteCourses,
+    changeFavoriteCourse,
+    isLoading: isFavCoursesLoading,
+  } = useFavoriteCourses();
   return (
     <>
       <div className="table-container">
@@ -88,6 +92,24 @@ export default function CoursesTable({
                   <TableItem>{description}</TableItem>
                   <TableItem>
                     {new Date(dateCreated).toLocaleDateString()}
+                  </TableItem>
+                  <TableItem>
+                    {!isFavCoursesLoading && (
+                      <Heart
+                        className="cursor-pointer"
+                        onClick={() => changeFavoriteCourse(id)}
+                        fill={
+                          favoriteCourses.find((course) => course.id === id)
+                            ? 'red'
+                            : 'none'
+                        }
+                        stroke={
+                          favoriteCourses.find((course) => course.id === id)
+                            ? 'red'
+                            : 'black'
+                        }
+                      />
+                    )}
                   </TableItem>
                   <TableItem className="text-right">
                     {['admin', 'editor'].includes(authenticatedUser.role) ? (

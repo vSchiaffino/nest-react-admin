@@ -1,3 +1,4 @@
+import Course from '../models/course/Course';
 import CreateUserRequest from '../models/user/CreateUserRequest';
 import UpdateUserRequest from '../models/user/UpdateUserRequest';
 import User from '../models/user/User';
@@ -39,6 +40,14 @@ class UserService {
 
   async delete(id: string): Promise<void> {
     await apiService.delete(`/api/users/${id}`);
+  }
+
+  async getFavoriteCourses() {
+    return await apiService.get<Course[]>(`/api/users/favorite`);
+  }
+
+  async favoriteCourse(courseId: string) {
+    return await apiService.post(`/api/users/favorite/${courseId}`);
   }
 }
 
