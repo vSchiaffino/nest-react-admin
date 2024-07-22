@@ -21,12 +21,17 @@ import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
 import {
   CreateCourseDto,
+  EmailContentDto,
   GetCoursesResultDto,
   UpdateCourseDto,
 } from './course.dto';
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
 import { CourseService } from './course.service';
+import { UserGuard } from 'src/auth/guards/user.guard';
+import { MailerService } from 'src/mailer/mailer.service';
+import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
+import { User } from 'src/user/user.entity';
 
 @Controller('courses')
 @ApiBearerAuth()
@@ -36,6 +41,7 @@ export class CourseController {
   constructor(
     private readonly courseService: CourseService,
     private readonly contentService: ContentService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @Post()
@@ -71,6 +77,22 @@ export class CourseController {
   @Roles(Role.Admin)
   async delete(@Param('id') id: string): Promise<string> {
     return await this.courseService.delete(id);
+  }
+
+  @Post('/:id/contact/')
+  async contactEmail(
+    @AuthorizedUser() authorizedUser: User,
+    @Param('id') courseId: string,
+    @Body() emailContentDto: EmailContentDto,
+  ): Promise<void> {
+    const { title, message } = emailContentDto;
+    const course = await this.courseService.findById(courseId);
+    const beforeMessage = `Contact received from: ${authorizedUser.username} in course: ${course.name}\nMessage:\n`;
+    await this.mailerService.sendMail(
+      course.contactEmail,
+      title,
+      beforeMessage + message,
+    );
   }
 
   @Post('/:id/contents')

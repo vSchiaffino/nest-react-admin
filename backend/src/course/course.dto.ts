@@ -46,3 +46,13 @@ export class GetCoursesResultDto {
   courses: Course[];
   total: number;
 }
+
+export class EmailContentDto {
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @IsNotEmpty()
+  @IsString()
+  message: string;
+}
