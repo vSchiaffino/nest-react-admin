@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateContentDto, UpdateContentDto } from 'src/content/content.dto';
+import { CreateContentDto, UpdateContentDto } from '../content/content.dto';
 
 import { ContentService } from '../content/content.service';
 import { CourseController } from './course.controller';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { CourseService } from './course.service';
+import { UserService } from '../user/user.service';
+import { MailerService } from '../mailer/mailer.service';
 
 const CourseMockService = {
   save: jest.fn().mockImplementation((createCourseDto: CreateCourseDto) => {
@@ -14,6 +16,7 @@ const CourseMockService = {
       ...createCourseDto,
     };
   }),
+  count: jest.fn().mockImplementation(() => 0),
   findAll: jest.fn().mockImplementation(() => {
     return [
       {
@@ -117,6 +120,14 @@ describe('CourseController', () => {
           provide: ContentService,
           useValue: ContentMockService,
         },
+        {
+          provide: UserService,
+          useValue: {},
+        },
+        {
+          provide: MailerService,
+          useValue: {},
+        },
       ],
     }).compile();
 
@@ -130,18 +141,22 @@ describe('CourseController', () => {
   describe('saveCourse', () => {
     it('should get the created course ', async () => {
       const created = await controller.save({
+        contactEmail: 'test@test.com',
         name: 'test',
         description: 'test',
+        imageUrl: 'https:/image.com',
       });
       expect(created.id).toBe('testid');
       expect(created.name).toBe('test');
       expect(created.description).toBe('test');
+      expect(created.contactEmail).toBe('test@test.com');
+      expect(created.imageUrl).toBe('https:/image.com');
     });
   });
 
   describe('findAllCourses', () => {
     it('should get the array of courses ', async () => {
-      const courses = await controller.findAll({});
+      const { courses } = await controller.findAll({});
       expect(courses[0].id).toBe('testid1');
       expect(courses[1].name).toBe('test2');
       expect(courses[2].description).toBe('test3');

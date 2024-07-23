@@ -29,12 +29,11 @@ import {
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
 import { CourseService } from './course.service';
-import { MailerService } from 'src/mailer/mailer.service';
-import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
-import { User } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
-import { QueryBuilder } from 'typeorm';
-import { AuthorizedUserDto } from 'src/auth/auth.dto';
+import { MailerService } from '../mailer/mailer.service';
+import { AuthorizedUser } from '../decorators/authorized-user.decorator';
+import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
+import { AuthorizedUserDto } from '../auth/auth.dto';
 
 @Controller('courses')
 @ApiBearerAuth()

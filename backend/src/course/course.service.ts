@@ -4,7 +4,7 @@ import { ILike } from 'typeorm';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course, CourseRate } from './course.entity';
 import { CourseQuery } from './course.query';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class CourseService {

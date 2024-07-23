@@ -25,8 +25,8 @@ import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserQuery } from './user.query';
 import { UserService } from './user.service';
-import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
-import { AuthorizedUserDto } from 'src/auth/auth.dto';
+import { AuthorizedUser } from '../decorators/authorized-user.decorator';
+import { AuthorizedUserDto } from '../auth/auth.dto';
 
 @Controller('users')
 @ApiTags('Users')
