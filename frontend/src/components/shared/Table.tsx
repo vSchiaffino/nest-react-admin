@@ -37,6 +37,7 @@ export default function Table({
           {columns.map((column, index) => (
             <th
               onClick={() => {
+                if (!orderColumns.includes(column)) return;
                 if (orderBy == column) {
                   onChangePagination({
                     ...pagination,
