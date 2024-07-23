@@ -121,9 +121,10 @@ export class CourseController {
     @AuthorizedUser() authorizedUser: AuthorizedUserDto,
   ): Promise<void> {
     const user = await this.userService.findById(authorizedUser.userId, true);
-    const course = await this.courseService.findById(courseId);
+    const course = await this.courseService.findById(courseId, true);
     const isAlreadyEnrolled = course.students.find(
       (student) => student.id == user.id,
+      true,
     );
     if (isAlreadyEnrolled) {
       this.courseService.unenroll(user, course);
