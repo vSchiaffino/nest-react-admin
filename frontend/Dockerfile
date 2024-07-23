@@ -2,6 +2,7 @@ FROM node:alpine as build
 
 WORKDIR /app
 
+COPY package.json yarn.lock ./
 COPY . .
 
 RUN yarn
