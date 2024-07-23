@@ -32,22 +32,6 @@
     "eject": "react-scripts eject",
     "lint": "prettier --write ."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "plugins": [
-      "simple-import-sort",
-      "prettier"
-    ],
-    "rules": {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-      "prettier/prettier": "error",
-      "react-hooks/exhaustive-deps": "off"
-    }
-  },
   "browserslist": {
     "production": [
       ">0.2%",
