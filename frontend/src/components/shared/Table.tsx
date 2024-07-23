@@ -9,6 +9,7 @@ import Pagination from '../../models/shared/pagination';
 
 interface TableProps {
   columns: string[];
+  orderColumns?: string[];
   pagination: Pagination;
   onChangePagination: Dispatch<SetStateAction<Pagination>>;
   total: number;
@@ -21,6 +22,7 @@ export default function Table({
   pagination,
   total,
   children,
+  orderColumns = [],
 }: TableProps) {
   const chevronNotActiveClasses = 'text-slate-300';
   const chevronActiveClasses = 'hover:bg-slate-300 transition cursor-pointer';
@@ -46,7 +48,12 @@ export default function Table({
               }}
               key={index}
               scope="col"
-              className="hover:cursor-pointer hover:bg-slate-100 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className={
+                'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ' +
+                (orderColumns.includes(column)
+                  ? ' hover:cursor-pointer hover:bg-slate-100 '
+                  : '')
+              }
             >
               <div className="flex items-center">
                 {column}

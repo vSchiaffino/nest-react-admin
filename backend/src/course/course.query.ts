@@ -4,5 +4,5 @@ export class CourseQuery {
   page?: number;
   perPage?: number;
   orderBy?: string;
-  orderDirection?: string;
+  orderDirection?: 'ASC' | 'DESC';
 }

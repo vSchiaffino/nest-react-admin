@@ -6,10 +6,11 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 import { Role } from '../enums/role.enum';
-import { Course } from '../course/course.entity';
+import { Course, CourseRate } from '../course/course.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -46,4 +47,7 @@ export class User extends BaseEntity {
   @ManyToMany(() => Course, (course) => course.students)
   @JoinTable()
   enrolledCourses: Course[];
+
+  @OneToMany(() => CourseRate, (courseRate) => courseRate.user)
+  courseRates: CourseRate[];
 }

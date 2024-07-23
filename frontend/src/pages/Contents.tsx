@@ -3,7 +3,7 @@ import { BookOpen, Loader, Mail, Plus, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router';
-
+import Rating from '@mui/material/Rating';
 import ContentsTable from '../components/content/ContentsTable';
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
@@ -12,7 +12,6 @@ import CreateContentRequest from '../models/content/CreateContentRequest';
 import contentService from '../services/ContentService';
 import courseService from '../services/CourseService';
 import { ContactModal } from '../components/content/ContactModal';
-import useCourses from '../hooks/useCourses';
 import { useCourse } from '../hooks/useCourse';
 import CourseService from '../services/CourseService';
 import UsersTable from '../components/users/UsersTable';
@@ -20,7 +19,14 @@ import UsersTable from '../components/users/UsersTable';
 export default function Course() {
   const { id } = useParams<{ id: string }>();
   const { authenticatedUser } = useAuth();
-
+  const {
+    data: dataRate,
+    isLoading: isLoadingRate,
+    refetch: refetchRate,
+  } = useQuery([`rate-${authenticatedUser.id}-${id}`], () =>
+    CourseService.getRate(id),
+  );
+  const courseRate = (!isLoadingRate && dataRate.data.rating) || 0;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [addContentShow, setAddContentShow] = useState<boolean>(false);
@@ -74,17 +80,29 @@ export default function Course() {
           <Plus /> Add Content
         </button>
       ) : null}
-      <div className="flex flex-row justify-between mb-10">
-        <button
-          className="btn text-lg font-light mt-4 flex gap-5"
-          onClick={() => setShowContactForm(true)}
-        >
-          <Mail />
-          Contact to email
-        </button>
+      <div className="flex flex-row justify-between mb-10 mt-4">
+        <div className="mr-auto flex flex-row">
+          <button
+            className="btn text-lg font-light flex gap-5"
+            onClick={() => setShowContactForm(true)}
+          >
+            <Mail />
+            Contact to email
+          </button>
+          <Rating
+            className="self-center ml-10"
+            value={courseRate}
+            max={5}
+            onChange={async (e: any) => {
+              await CourseService.rate(id, e.target.value);
+              refetchRate();
+            }}
+            size={'large'}
+          />
+        </div>
         <button
           className={
-            'btn text-lg font-light mt-4 flex gap-5 ' +
+            'btn text-lg font-light flex gap-5 ' +
             (!isUserEnrolled ? 'bg-blue-500 hover:bg-blue-700' : '')
           }
           onClick={async () => {

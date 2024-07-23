@@ -1,13 +1,34 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FindConditions, ILike } from 'typeorm';
+import { ILike } from 'typeorm';
 
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
-import { Course } from './course.entity';
+import { Course, CourseRate } from './course.entity';
 import { CourseQuery } from './course.query';
 import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class CourseService {
+  async getRate(courseId: string, userId: string): Promise<CourseRate | null> {
+    return await CourseRate.findOne({
+      where: { course: { id: courseId }, user: { id: userId } },
+    });
+  }
+  async rate(courseId: string, userId: string, rating: number) {
+    const existingRate = await CourseRate.findOne({
+      where: { course: { id: courseId }, user: { id: userId } },
+    });
+    if (existingRate) {
+      existingRate.rating = rating;
+      existingRate.save();
+    } else {
+      await CourseRate.create({
+        rating,
+        course: { id: courseId },
+        user: { id: userId },
+      }).save();
+    }
+  }
+
   private processFilter(filter: { name?: string; description?: string }) {
     Object.keys(filter).forEach((key) => {
       filter[key] = ILike(`%${filter[key]}%`);
@@ -41,6 +62,7 @@ export class CourseService {
     const take = perPage || 10;
     const skip = ((page || 1) - 1) * take;
     return await Course.find({
+      relations: ['rates'],
       where,
       take,
       skip,
@@ -50,12 +72,11 @@ export class CourseService {
     });
   }
 
-  async findById(id: string): Promise<Course> {
-    const course = await Course.createQueryBuilder('course')
-      .leftJoinAndSelect('course.students', 'students')
-      .where('course.id = :id', { id })
-      .getOne();
-      
+  async findById(id: string, loadRelations = false): Promise<Course> {
+    const course = await Course.findOne(id, {
+      relations: loadRelations ? ['students'] : [],
+    });
+
     if (!course) {
       throw new HttpException(
         `Could not find course with matching id ${id}`,

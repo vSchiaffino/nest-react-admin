@@ -12,6 +12,7 @@ import Table from '../shared/Table';
 import TableItem from '../shared/TableItem';
 import Pagination from '../../models/shared/pagination';
 import useFavoriteCourses from '../../hooks/useFavoriteCourses';
+import { Rating } from '@mui/material';
 
 interface UsersTableProps {
   total: number;
@@ -78,7 +79,8 @@ export default function CoursesTable({
       <div className="table-container">
         <Table
           total={total}
-          columns={['name', 'description', 'dateCreated']}
+          orderColumns={['name', 'description', 'dateCreated']}
+          columns={['name', 'description', 'dateCreated', 'rating', 'fav']}
           pagination={pagination}
           onChangePagination={onChangePagination}
         >
@@ -92,6 +94,7 @@ export default function CoursesTable({
                   dateCreated,
                   imageUrl,
                   contactEmail,
+                  rates,
                 }) => (
                   <tr key={id}>
                     <TableItem>
@@ -100,6 +103,19 @@ export default function CoursesTable({
                     <TableItem>{description}</TableItem>
                     <TableItem>
                       {new Date(dateCreated).toLocaleDateString()}
+                    </TableItem>
+                    <TableItem>
+                      {
+                        <Rating
+                          precision={0.5}
+                          readOnly
+                          value={
+                            rates.reduce((acc, curr) => acc + curr.rating, 0) /
+                            (rates.length || 1)
+                          }
+                        />
+                      }
+                      {}
                     </TableItem>
                     <TableItem>
                       {!isFavCoursesLoading && (

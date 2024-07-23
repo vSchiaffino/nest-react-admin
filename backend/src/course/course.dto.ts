@@ -1,4 +1,14 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 import { Course } from './course.entity';
 
 export class CreateCourseDto {
@@ -55,4 +65,11 @@ export class EmailContentDto {
   @IsNotEmpty()
   @IsString()
   message: string;
+}
+
+export class RateCourseDto {
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  rating: number;
 }

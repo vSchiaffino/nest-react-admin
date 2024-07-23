@@ -1,3 +1,4 @@
+import { SyntheticEvent } from 'react';
 import Course from '../models/course/Course';
 import CourseQuery from '../models/course/CourseQuery';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
@@ -7,6 +8,15 @@ import UpdateCourseRequest from '../models/course/UpdateCourseRequest';
 import apiService from './ApiService';
 
 class UserService {
+  async getRate(courseId: string) {
+    return await apiService.get(`/api/courses/${courseId}/rate`);
+  }
+
+  async rate(courseId: string, value: string) {
+    await apiService.post(`/api/courses/${courseId}/rate`, {
+      rating: parseInt(value),
+    });
+  }
   async save(createCourseRequest: CreateCourseRequest): Promise<void> {
     await apiService.post('/api/courses', createCourseRequest);
   }

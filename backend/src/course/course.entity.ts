@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   OneToMany,
-  JoinTable,
+  ManyToOne,
 } from 'typeorm';
 
 import { Content } from '../content/content.entity';
@@ -15,6 +15,8 @@ import { User } from '../user/user.entity';
 export class Course extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  averageRating: number;
 
   @Column()
   name: string;
@@ -39,4 +41,22 @@ export class Course extends BaseEntity {
 
   @ManyToMany(() => User, (user) => user.enrolledCourses)
   students: User[];
+
+  @OneToMany(() => CourseRate, (rate) => rate.course)
+  rates: CourseRate[];
+}
+
+@Entity()
+export class CourseRate extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @ManyToOne(() => User, (user) => user.courseRates)
+  user: User;
+
+  @ManyToOne(() => Course, (course) => course.rates)
+  course: Course;
+
+  @Column()
+  rating: number;
 }

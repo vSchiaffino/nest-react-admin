@@ -6,6 +6,11 @@ export default interface Course {
   description: string;
   imageUrl: string;
   contactEmail: string;
+  rates: {
+    rating: number;
+    userId: string;
+    courseId: string;
+  }[];
   dateCreated: Date;
   students: User[];
 }

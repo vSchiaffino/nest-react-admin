@@ -23,6 +23,7 @@ import {
   CreateCourseDto,
   EmailContentDto,
   GetCoursesResultDto,
+  RateCourseDto,
   UpdateCourseDto,
 } from './course.dto';
 import { Course } from './course.entity';
@@ -47,6 +48,23 @@ export class CourseController {
     private readonly mailerService: MailerService,
   ) {}
 
+  @Post('/:id/rate')
+  async rankCourse(
+    @Param('id') courseId: string,
+    @AuthorizedUser() user: AuthorizedUserDto,
+    @Body() { rating }: RateCourseDto,
+  ) {
+    await this.courseService.rate(courseId, user.userId, rating);
+  }
+
+  @Get('/:id/rate')
+  async getCourseRank(
+    @Param('id') courseId: string,
+    @AuthorizedUser() user: AuthorizedUserDto,
+  ) {
+    return await this.courseService.getRate(courseId, user.userId);
+  }
+
   @Post()
   @Roles(Role.Admin, Role.Editor)
   async save(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
@@ -64,7 +82,7 @@ export class CourseController {
 
   @Get('/:id')
   async findOne(@Param('id') id: string): Promise<Course> {
-    return await this.courseService.findById(id);
+    return await this.courseService.findById(id, true);
   }
 
   @Put('/:id')
