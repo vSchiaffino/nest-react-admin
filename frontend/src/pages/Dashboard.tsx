@@ -93,7 +93,7 @@ export default function Dashboard() {
           </div>
         ) : null}
       </div>
-      {!isLoadingCourses && (
+      {!isLoadingCourses && courses.length > 0 && (
         <FeaturedCourses
           courses={courses}
           title="Check Out Our Latest Courses!"
@@ -101,14 +101,19 @@ export default function Dashboard() {
       )}
       {!isLoading && (
         <>
-          <FeaturedCourses
-            courses={user.favoriteCourses}
-            title="Your favorite courses:"
-          />
-          <FeaturedCourses
-            courses={user.enrolledCourses}
-            title="Your enrolled courses:"
-          />
+          {user.favoriteCourses.length > 0 && (
+            <FeaturedCourses
+              courses={user.favoriteCourses}
+              title="Your favorite courses:"
+            />
+          )}
+
+          {user.enrolledCourses.length > 0 && (
+            <FeaturedCourses
+              courses={user.enrolledCourses}
+              title="Your enrolled courses:"
+            />
+          )}
         </>
       )}
     </Layout>
