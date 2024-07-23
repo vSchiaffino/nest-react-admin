@@ -42,7 +42,7 @@ export class Course extends BaseEntity {
   @ManyToMany(() => User, (user) => user.enrolledCourses)
   students: User[];
 
-  @OneToMany(() => CourseRate, (rate) => rate.course)
+  @OneToMany(() => CourseRate, (rate) => rate.course, { cascade: true })
   rates: CourseRate[];
 }
 
@@ -51,10 +51,10 @@ export class CourseRate extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.courseRates)
+  @ManyToOne(() => User, (user) => user.courseRates, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Course, (course) => course.rates)
+  @ManyToOne(() => Course, (course) => course.rates, { onDelete: 'CASCADE' })
   course: Course;
 
   @Column()

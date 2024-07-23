@@ -40,14 +40,22 @@ export class User extends BaseEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToMany(() => Course, (course) => course.favoritedBy)
+  @ManyToMany(() => Course, (course) => course.favoritedBy, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinTable()
   favoriteCourses: Course[];
 
-  @ManyToMany(() => Course, (course) => course.students)
+  @ManyToMany(() => Course, (course) => course.students, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinTable()
   enrolledCourses: Course[];
 
-  @OneToMany(() => CourseRate, (courseRate) => courseRate.user)
+  @OneToMany(() => CourseRate, (courseRate) => courseRate.user, {
+    cascade: true,
+  })
   courseRates: CourseRate[];
 }
