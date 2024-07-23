@@ -21,10 +21,10 @@ jobs:
         with:
           node-version: '20'
 
-      - run: cd backend
-
       - name: Install dependencies
+        working-directory: backend
         run: yarn install
 
       - name: Run tests
+        working-directory: backend
         run: yarn test

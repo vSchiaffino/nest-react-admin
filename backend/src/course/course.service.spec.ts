@@ -76,6 +76,8 @@ describe('CourseService', () => {
   describe('saveCourse', () => {
     it('should get the created course ', async () => {
       const created = await service.save({
+        contactEmail: 'test@test.com',
+        imageUrl: 'https://test.com',
         name: 'test',
         description: 'test',
       });
