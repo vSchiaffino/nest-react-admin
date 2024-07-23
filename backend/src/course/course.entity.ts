@@ -37,7 +37,6 @@ export class Course extends BaseEntity {
   @ManyToMany(() => User, (user) => user.favoriteCourses)
   favoritedBy: User[];
 
-  @ManyToMany(() => User)
-  @JoinTable()
+  @ManyToMany(() => User, (user) => user.enrolledCourses)
   students: User[];
 }

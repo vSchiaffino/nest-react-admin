@@ -39,10 +39,11 @@ export class User extends BaseEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToMany(() => Course, { eager: true })
+  @ManyToMany(() => Course, (course) => course.favoritedBy)
   @JoinTable()
   favoriteCourses: Course[];
 
   @ManyToMany(() => Course, (course) => course.students)
+  @JoinTable()
   enrolledCourses: Course[];
 }

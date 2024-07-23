@@ -13,3 +13,9 @@ export class LoginResponseDto {
   token: string;
   user: User;
 }
+
+export interface AuthorizedUserDto {
+  userId: string;
+  username: string;
+  role: string;
+}

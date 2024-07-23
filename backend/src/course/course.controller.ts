@@ -33,6 +33,7 @@ import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import { QueryBuilder } from 'typeorm';
+import { AuthorizedUserDto } from 'src/auth/auth.dto';
 
 @Controller('courses')
 @ApiBearerAuth()
@@ -100,9 +101,9 @@ export class CourseController {
   @Post('/:id/enroll')
   async changeEnroll(
     @Param('id') courseId: string,
-    @AuthorizedUser() authorizedUser: User,
+    @AuthorizedUser() authorizedUser: AuthorizedUserDto,
   ): Promise<void> {
-    const user = await this.userService.findById(authorizedUser.id);
+    const user = await this.userService.findById(authorizedUser.userId, true);
     const course = await this.courseService.findById(courseId);
     const isAlreadyEnrolled = course.students.find(
       (student) => student.id == user.id,

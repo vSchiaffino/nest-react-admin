@@ -7,5 +7,6 @@ export default interface User {
   username: string;
   role: string;
   isActive: boolean;
+  enrolledCourses: Course[];
   favoriteCourses: Course[];
 }

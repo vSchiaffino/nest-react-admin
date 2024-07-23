@@ -40,6 +40,10 @@ class UserService {
       sendContactRequest,
     );
   }
+
+  async changeEnroll(courseId: string) {
+    await apiService.post(`/api/courses/${courseId}/enroll`);
+  }
 }
 
 export default new UserService();

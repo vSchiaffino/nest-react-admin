@@ -9,6 +9,8 @@ import { Course } from 'src/course/course.entity';
 
 @Injectable()
 export class UserService {
+  constructor() {}
+
   async save(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.findByUsername(createUserDto.username);
 
@@ -40,12 +42,10 @@ export class UserService {
     });
   }
 
-  async findById(
-    id: string,
-    loadEagerRelations: boolean = false,
-  ): Promise<User> {
-    const user = await User.findOne(id, { loadEagerRelations });
-
+  async findById(id: string, loadRelations: boolean = false): Promise<User> {
+    const user = await User.findOne(id, {
+      relations: loadRelations ? ['favoriteCourses', 'enrolledCourses'] : [],
+    });
     if (!user) {
       throw new HttpException(
         `Could not find user with matching id ${id}`,
@@ -57,7 +57,7 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    return User.findOne({ where: { username }, loadRelationIds: true });
+    return User.findOne({ where: { username } });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -96,6 +96,8 @@ export class UserService {
   /* Hash the refresh token and save it to the database */
   async setRefreshToken(id: string, refreshToken: string): Promise<void> {
     const user = await this.findById(id);
+    delete user.favoriteCourses;
+    delete user.enrolledCourses;
     await User.update(user, {
       refreshToken: refreshToken ? await bcrypt.hash(refreshToken, 10) : null,
     });

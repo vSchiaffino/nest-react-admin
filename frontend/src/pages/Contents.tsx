@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader, Mail, Plus, X } from 'react-feather';
+import { BookOpen, Loader, Mail, Plus, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router';
@@ -12,6 +12,10 @@ import CreateContentRequest from '../models/content/CreateContentRequest';
 import contentService from '../services/ContentService';
 import courseService from '../services/CourseService';
 import { ContactModal } from '../components/content/ContactModal';
+import useCourses from '../hooks/useCourses';
+import { useCourse } from '../hooks/useCourse';
+import CourseService from '../services/CourseService';
+import UsersTable from '../components/users/UsersTable';
 
 export default function Course() {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +47,10 @@ export default function Course() {
       refetchInterval: 1000,
     },
   );
-
+  const { course, refetch, isLoading: isLoadingCourse } = useCourse(id);
+  const isUserEnrolled =
+    !isLoadingCourse &&
+    course.students.map((course) => course.id).includes(authenticatedUser.id);
   const saveCourse = async (createContentRequest: CreateContentRequest) => {
     try {
       await contentService.save(id, createContentRequest);
@@ -67,17 +74,29 @@ export default function Course() {
           <Plus /> Add Content
         </button>
       ) : null}
-
+      <div className="flex flex-row justify-between mb-10">
+        <button
+          className="btn text-lg font-light mt-4 flex gap-5"
+          onClick={() => setShowContactForm(true)}
+        >
+          <Mail />
+          Contact to email
+        </button>
+        <button
+          className={
+            'btn text-lg font-light mt-4 flex gap-5 ' +
+            (!isUserEnrolled ? 'bg-blue-500 hover:bg-blue-700' : '')
+          }
+          onClick={async () => {
+            await CourseService.changeEnroll(id);
+            refetch();
+          }}
+        >
+          <BookOpen />
+          {isUserEnrolled ? 'Unenroll' : 'Enroll'}
+        </button>
+      </div>
       <div className="table-filter flex-col">
-        <div className="flex flex-row">
-          <button
-            className="btn text-lg font-light mt-4 flex gap-5"
-            onClick={() => setShowContactForm(true)}
-          >
-            <Mail />
-            Contact to email
-          </button>
-        </div>
         <h2 className="flex flex-row font-medium text-xl">Filter contents</h2>
         <div className="flex flex-row gap-5 w-1/2">
           <input
@@ -96,9 +115,13 @@ export default function Course() {
           />
         </div>
       </div>
-
       <ContentsTable data={data} isLoading={isLoading} courseId={id} />
-
+      {authenticatedUser.role === 'admin' && (
+        <>
+          <h2 className="text-2xl my-10">Enrolled users:</h2>
+          <UsersTable data={course?.students} isLoading={isLoadingCourse} />
+        </>
+      )}
       {/* Add User Modal */}
       <Modal show={addContentShow}>
         <div className="flex">

@@ -26,6 +26,7 @@ import { User } from './user.entity';
 import { UserQuery } from './user.query';
 import { UserService } from './user.service';
 import { AuthorizedUser } from 'src/decorators/authorized-user.decorator';
+import { AuthorizedUserDto } from 'src/auth/auth.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -36,9 +37,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/favorite')
-  @UseGuards(UserGuard)
-  async getFavoritedCourses(@AuthorizedUser() jwtUser: User) {
-    const user = await this.userService.findById(jwtUser.id, true);
+  async getFavoritedCourses(@AuthorizedUser() jwtUser: AuthorizedUserDto) {
+    const user = await this.userService.findById(jwtUser.userId, true);
     return user.favoriteCourses;
   }
 
@@ -58,7 +58,7 @@ export class UserController {
   @Get('/:id')
   @UseGuards(UserGuard)
   async findOne(@Param('id') id: string): Promise<User> {
-    return await this.userService.findById(id);
+    return await this.userService.findById(id, true);
   }
 
   @Put('/:id')
@@ -77,12 +77,11 @@ export class UserController {
   }
 
   @Post('/favorite/:courseId')
-  @UseGuards(UserGuard)
   async favoriteCourse(
     @Param('courseId') courseId: string,
-    @AuthorizedUser() jwtUser: User,
+    @AuthorizedUser() jwtUser: AuthorizedUserDto,
   ) {
-    const user = await this.userService.findById(jwtUser.id, true);
+    const user = await this.userService.findById(jwtUser.userId, true);
     if (user.favoriteCourses.find((course) => course.id === courseId))
       this.userService.removeFavoriteCourse(user, courseId);
     else this.userService.addFavoriteCourse(user, courseId);
